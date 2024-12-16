@@ -3,7 +3,7 @@ import { onMounted, reactive, ref } from 'vue';
 
 import ModalAddCategory from '@/components/ModalAddCategory.vue';
 import { useCategoryStore } from '@/stores/category';
-import { useProductStore } from '@/stores/product';
+import { useProductStore } from '@/stores/livros';
 import { useUploaderStore } from '@/stores/uploader';
 
 const categoryStore = useCategoryStore();

@@ -28,14 +28,14 @@ import LogoTitle from '../LogoTitle.vue'
   display: flex;
   gap: 1rem;
   align-items: center;
-
-  & nav {
+}
+.logo-nav nav{
     margin-left: 5rem;
     display: flex;
     flex-direction: row;
     gap: 3rem;
-  }
 }
+
 
 a {
   text-decoration: none;
