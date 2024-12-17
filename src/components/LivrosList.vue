@@ -1,58 +1,57 @@
 <script setup>
 import { onMounted, watch } from 'vue';
-import { useProductStore } from '@/stores/product';
+import { useLivrosStore } from '@/stores/livros';
 
 import { formatDescription, formatPrice, formatTitle } from '@/helpers/format';
+import { RouterLink } from 'vue-router';
 
 const props = defineProps(['category_id']);
-const productStore = useProductStore();
+const livrosStore = useLivrosStore();
 
-async function getProducts() {
+async function getLivros() {
   if (props.category_id) {
-    await productStore.getProductsByCategory(props.category_id);
+    await livrosStore.getLivrosByCategory(props.category_id);
   } else {
-    await productStore.getProducts();
+    await livrosStore.getLivros();
   }
 }
 
 watch(
   () => props.category_id,
   async () => {
-    await getProducts();
+    await getLivros();
   },
 );
 
 onMounted(async () => {
-  await getProducts();
+  await livrosStore.getLivros();
+  
 });
 </script>
 
 <template>
   
-  <div class="product-list">
-    <router-link :to="{ name: 'ProductAdd' }">
+  <div class="livros-list">
+
+    <RouterLink :to="{ name: 'LivrosAdd' }">
       <button class="icon ">
         <i class="mdi mdi-plus" />
       </button>
-    </router-link>
-    <div v-if="productStore.products.length === 0">
+    </RouterLink>
+    <div v-if="livrosStore.livros.length === 0">
       <p>Produtos não encontrados!!!</p>
     </div>
-    <div
-      v-for="product in productStore.products"
-      :key="product.id"
-      class="product-card"
-    >
-      <div class="product-img-wrapper">
-        <img :src="product.image?.url" alt="product.name" />
+    <div v-for="livros in livrosStore.livros" :key="livros.id" class="product-card">
+      <div class="livros-img-wrapper">
+        <img :src="livros.image?.url" alt="livros.name" />
         <i class="mdi mdi-heart-outline" />
       </div>
       <div class="product-title-price">
-        <p>{{ formatTitle(product.title) }}</p>
-        <p>{{ formatPrice(product.price * 1) }}</p>
+        <p>{{ formatTitle(livros.title) }}</p>
+        <p>{{ formatPrice(livros.price * 1) }}</p>
       </div>
       <div class="product-description-stars">
-        <p>{{ formatDescription(product.description) }}</p>
+        <p>{{ formatDescription(livros.description) }}</p>
         <div class="stars">
           <i class="mdi mdi-star" />
           <i class="mdi mdi-star" />

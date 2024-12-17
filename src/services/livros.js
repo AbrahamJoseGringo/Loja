@@ -7,7 +7,7 @@ export default class Livros {
   }
 
   async getLivrosByCategory(category_id) {
-    const response = await axios.get(`/livros/?category__id=${category_id}`);
+    const response = await axios.get(`/livros/${category_id}`);
     return response.data.results;
   }
 

@@ -3,11 +3,11 @@ import { onMounted, reactive, ref } from 'vue';
 
 import ModalAddCategory from '@/components/ModalAddCategory.vue';
 import { useCategoryStore } from '@/stores/category';
-import { useProductStore } from '@/stores/livros';
+import { useLivrosStore } from '@/stores/livros';
 import { useUploaderStore } from '@/stores/uploader';
 
 const categoryStore = useCategoryStore();
-const productStore = useProductStore();
+const livrosStore = useLivrosStore();
 const uploaderStore = useUploaderStore();
 
 const showModal = ref(false);
@@ -15,7 +15,7 @@ const showModal = ref(false);
 const file = ref(null);
 const previewImage = ref('');
 
-const product = reactive({
+const livro = reactive({
   title: '',
   description: '',
   category: '',
@@ -30,9 +30,9 @@ const uploadImage = (e) => {
 };
 
 async function save() {
-  product.image_attachment_key = await uploaderStore.uploadImage(file.value);
-  await productStore.createProduct(product);
-  Object.assign(product, {
+  livro.image_attachment_key = await uploaderStore.uploadImage(file.value);
+  await livrosStore.createLivro(livro);
+  Object.assign(livro, {
     title: '',
     description: '',
     category: '',
@@ -52,11 +52,11 @@ onMounted(async () => {
   <form class="form" @submit.prevent="save">
     <div class="row-form">
       <label for="title">Título</label>
-      <input type="text" id="title" v-model="product.title" />
+      <input type="text" id="title" v-model="livro.title" />
     </div>
     <div class="row-form">
       <label for="description">Descrição</label>
-      <textarea id="description" v-model="product.description"></textarea>
+      <textarea id="description" v-model="livro.description"></textarea>
     </div>
     <div class="row-form">
       <label for="category">Categoria</label>
@@ -88,11 +88,11 @@ onMounted(async () => {
     </div>
     <div class="row-form">
       <label for="price">Preço</label>
-      <input type="number" id="price" v-model="product.price" />
+      <input type="number" id="price" v-model="livro.price" />
     </div>
     <div class="row-form">
       <label for="stock">Estoque</label>
-      <input type="number" id="stock" v-model="product.stock" />
+      <input type="number" id="stock" v-model="livro.stock" />
     </div>
     <button class="btn-send" type="submit">Adicionar</button>
   </form>
