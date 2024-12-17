@@ -3,13 +3,17 @@ import { ref, onMounted } from 'vue'
 import { PassageUser } from '@passageidentity/passage-elements/passage-user'
 import { useAuthStore } from '@/stores/auth'
 import { useLivrosStore } from '@/stores/livros'
+import { useManhwasStore } from '@/stores/manhwa'
+
 
 const authStore = useAuthStore()
 const livrosStore = useLivrosStore()
+const manhwasStore = useManhwasStore()
 
 // Dados reativos
 const livros = ref([])
-const livrosPopulares = ref([])
+const manhwas = ref([])
+const populares = ref([])
 
 // Verifica o usuário autenticado
 const getUserInfo = async () => {
@@ -29,14 +33,18 @@ const getUserInfo = async () => {
 
 // Função para filtrar livros populares com base na avaliação
 const filterPopulares = () => {
-  livrosPopulares.value = livros.value.filter(livro => livro.calificacion_promedio >= 4)
+  const livrosPopulares = livros.value.filter(livro => livro.calificacion_promedio && livro.calificacion_promedio >= 4)
+  const manhwasPopulares = manhwas.value.filter(manhwa => manhwa.calificacion_prom && manhwa.calificacion_prom >= 8)
+  populares.value = [...livrosPopulares, ...manhwasPopulares]
 }
 
 // Carrega os dados na montagem do componente
 onMounted(async () => {
   await getUserInfo()
   await livrosStore.getLivros()
-  livros.value = livrosStore.livros
+  await manhwasStore.getManhwas()
+  livros.value = livrosStore.livros || []
+  manhwas.value = manhwasStore.manhwas || []
   filterPopulares()  // Filtra os livros populares
 })
 </script>
@@ -47,16 +55,18 @@ onMounted(async () => {
     <h1 class="title">Lista de Livros e Mangás</h1>
     <hr />
 
+    <!-- Seção Populares Hoje -->
     <div>
       <h2>Populares Hoje</h2>
-      <div class="grid">
-        <div v-for="livro in livrosPopulares" :key="livro.id" class="card">
-          <!-- Verifique se a capa existe e exiba a imagem -->
-          <img :src="livro.capa_url || 'default-image.jpg'" alt="Capa do Livro" class="image" />
+      <div v-if="populares.length > 0" class="grid">
+        <div v-for="item in populares" :key="item.id" class="card">
+          <img :src="item.capa_url || 'default-image.jpg'" alt="Capa" class="image" />
           <div class="info">
-            <h3>{{ livro.titulo }}</h3>
-            <p>{{ livro.autor }}</p>
-            <p class="status">{{ livro.completo ? 'Livro Completo' : 'Incompleto' }}</p>
+            <h3>{{ item.titulo || 'Título Desconhecido' }}</h3>
+            <p>{{ item.autores || 'Autor Desconhecido' }}</p>
+            <p class="status">
+              {{ item.completo !== undefined ? (item.completo ? 'Completo' : 'Incompleto') : 'Status Desconhecido' }}
+            </p>
             
             <!-- Exibindo a avaliação com estrelas -->
             <div class="rating">
@@ -64,20 +74,21 @@ onMounted(async () => {
                 v-for="star in 5" 
                 :key="star" 
                 class="star" 
-                :class="{'filled': star <= Math.round(livro.calificacion_promedio)}">
+                :class="{'filled': star <= Math.round(item.calificacion_promedio || item.calificacion_prom || 0)}">
                 ★
               </span>
-              <span class="rating-text">({{ livro.calificacion_promedio ? livro.calificacion_promedio.toFixed(1) : 'Sem avaliação' }})</span>
+              <span class="rating-text">
+                ({{ (item.calificacion_promedio || item.calificacion_prom || 0).toFixed(1) }})
+              </span>
             </div>
           </div>
         </div>
       </div>
+      <p v-else>Nenhum item popular encontrado.</p>
     </div>
-
-    <!-- Seção de Mangás (não modificada aqui) -->
-    <!-- ... -->
   </div>
 </template>
+
 
 <style scoped>
 .container {
@@ -123,10 +134,10 @@ h2 {
 }
 
 .image {
-  width: 73%; /* A imagem ocupa 73% da largura do card */
-  height: 250px; /* Altura fixa de 250px */
-  object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
-  margin: 0 auto; /* Centraliza a imagem horizontalmente */
+  width: 100%; /* A imagem ocupa 73% da largura do card */
+  height: auto; /* Altura fixa de 250px */
+  top: 0;
+  transition: transform .2s;
 }
 
 .info {
