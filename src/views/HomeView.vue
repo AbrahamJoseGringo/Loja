@@ -65,7 +65,7 @@ onMounted(async () => {
             <h3>{{ item.titulo || 'Título Desconhecido' }}</h3>
             <p>{{ item.autores || 'Autor Desconhecido' }}</p>
             <p class="status">
-              {{ item.completo !== undefined ? (item.completo ? 'Completo' : 'Incompleto') : 'Status Desconhecido' }}
+              {{ item.completo !== undefined ? (item.completo ? 'Completo' : 'Incompleto') : 'Em andiamento' }}
             </p>
             
             <!-- Exibindo a avaliação com estrelas -->
