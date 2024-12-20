@@ -116,6 +116,36 @@ onMounted(async () => {
       </div>
       <p v-else>Nenhum livro encontrado.</p>
     </div>
+     <div>
+      <h2>Manwhas</h2>
+      <div v-if="manhwas.length > 0" class="grid">
+        <div v-for="item in manwhas" :key="item.id" class="card">
+          <img :src="item.capa_url || 'default-image.jpg'" alt="Capa" class="image" />
+          <div class="info">
+            <h3>{{ item.titulo || 'Título Desconhecido' }}</h3>
+            <p>{{ item.autores || 'Autor Desconhecido' }}</p>
+            <p class="status">
+              {{ item.completo !== undefined ? (item.completo ? 'Completo' : 'Incompleto') : 'Em andiamento' }}
+            </p>
+            
+            <!-- Exibindo a avaliação com estrelas -->
+            <div class="rating">
+              <span 
+                v-for="star in 5" 
+                :key="star" 
+                class="star" 
+                :class="{'filled': star <= Math.round(item.calificacion_promedio || item.calificacion_prom || 0)}">
+                ★
+              </span>
+              <span class="rating-text">
+                ({{ (item.calificacion_promedio || item.calificacion_prom || 0).toFixed(1) }})
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p v-else>Nenhum item popular encontrado.</p>
+    </div>
   </div>
 </template>
 
