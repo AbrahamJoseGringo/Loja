@@ -119,7 +119,7 @@ onMounted(async () => {
      <div>
       <h2>Manwhas</h2>
       <div v-if="manhwas.length > 0" class="grid">
-        <div v-for="item in manwhas" :key="item.id" class="card">
+        <div v-for="item in manhwas" :key="item.id" class="card">
           <img :src="item.capa_url || 'default-image.jpg'" alt="Capa" class="image" />
           <div class="info">
             <h3>{{ item.titulo || 'Título Desconhecido' }}</h3>
@@ -144,7 +144,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <p v-else>Nenhum item popular encontrado.</p>
+      <p v-else>Nenhum manhwas encontrados.</p>
     </div>
   </div>
 </template>
